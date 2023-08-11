@@ -4,11 +4,11 @@ const Image = require("../models/imagen.models");
 
 // VISTAS
 const indexView = (_req, res) => {
-  res.render("galleries/index", { mensaje: "" });
+  res.render("galerias/index", { mensaje: "" });
 };
 
 const createView = (_req, res) => {
-  res.render("galleries/create");
+  res.render("galerias/crear");
 };
 
 // APIS
