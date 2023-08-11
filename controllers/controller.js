@@ -2,7 +2,6 @@ const path = require("path");
 const { cloudinary } = require("../settings/cloudinary");
 const Image = require("../models/imagen.models");
 
-// VISTAS
 const indexView = (_req, res) => {
   res.render("galerias/index", { mensaje: "" });
 };
@@ -11,10 +10,8 @@ const createView = (_req, res) => {
   res.render("galerias/crear");
 };
 
-// APIS
 const index = async (req, res) => {
   try {
-    // Implementa la lógica para obtener todas las imágenes
     const images = await Image.findAll();
     res.status(200).json(images);
   } catch (error) {
@@ -26,7 +23,6 @@ const index = async (req, res) => {
 const show = async (req, res) => {
   const { id } = req.params;
   try {
-    // Implementa la lógica para obtener los detalles de una imagen por su ID
     const image = await Image.findByPk(id);
     if (!image) {
       return res.status(404).json({ mensaje: "Imagen no encontrada." });
@@ -34,7 +30,9 @@ const show = async (req, res) => {
     res.status(200).json(image);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ mensaje: "Error al obtener los detalles de la imagen." });
+    res
+      .status(500)
+      .json({ mensaje: "Error al obtener los detalles de la imagen." });
   }
 };
 
@@ -55,7 +53,9 @@ const store = async (req, res) => {
   });
 
   if (imageExists) {
-    return res.status(400).json({ mensaje: "La imagen ya existe en la base de datos." });
+    return res
+      .status(400)
+      .json({ mensaje: "La imagen ya existe en la base de datos." });
   }
 
   uploadPath = path.join(__dirname, "../files/", image.name);
@@ -98,11 +98,49 @@ const store = async (req, res) => {
 };
 
 const update = async (req, res) => {
-  // Implementa la lógica para actualizar una imagen por su ID
+  const { id } = req.params;
+  const newData = req.body; // Los nuevos datos para actualizar la imagen
+
+  try {
+    const image = await Image.findByPk(id);
+
+    if (!image) {
+      return res.status(404).json({ mensaje: "Imagen no encontrada." });
+    }
+
+    // Actualizar los campos de la imagen con los nuevos datos
+    await image.update(newData);
+
+    return res
+      .status(200)
+      .json({ mensaje: "Imagen actualizada correctamente." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al actualizar la imagen." });
+  }
 };
 
 const destroy = async (req, res) => {
-  // Implementa la lógica para eliminar una imagen por su ID
+  const { id } = req.params;
+
+  try {
+    const image = await Image.findByPk(id);
+
+    if (!image) {
+      return res.status(404).json({ mensaje: "Imagen no encontrada." });
+    }
+
+    // Eliminar la imagen de Cloudinary
+    await cloudinary.uploader.destroy(image.public_id);
+
+    // Eliminar la imagen de la base de datos
+    await image.destroy();
+
+    return res.status(200).json({ mensaje: "Imagen eliminada correctamente." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al eliminar la imagen." });
+  }
 };
 
 module.exports = {

@@ -8,7 +8,7 @@ const {
   update,
   store,
   destroy,
-} = require("../controllers/galeria.controller");
+} = require("../controllers/controller");
 
 const router = Router();
 
@@ -22,5 +22,7 @@ router.get("/api/:id/show", show);
 router.post("/api", store);
 router.put("/api/:id/update", update);
 router.delete("/api/:id/destroy", destroy);
+
+
 
 module.exports = router;

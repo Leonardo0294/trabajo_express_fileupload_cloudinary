@@ -32,6 +32,33 @@ sequelize
   })
   .catch((error) => console.error("Error al conectar a base de datos", error));
 
+app.post("/upload", (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).json({ mensaje: "No hay archivos que subir." });
+  }
+
+  // El nombre del campo en el formulario debe ser 'archivo'
+  const archivo = req.files.archivo;
+
+  // Especifica la carpeta de destino donde se guardarán los archivos
+  const uploadPath = path.join(__dirname, "uploads", archivo.name);
+
+  // Mueve el archivo al directorio de destino
+  archivo.mv(uploadPath, (err) => {
+    if (err) {
+      return res.status(500).json({ mensaje: "Error al subir el archivo." });
+    }
+
+    res.status(200).json({ mensaje: "¡Archivo subido correctamente!" });
+  });
+});
+
+
+
+
+
+
+
 // Enrutamiento
 app.use("/", require("./routes/galeria.routes"));
 
