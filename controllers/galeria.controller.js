@@ -1,8 +1,8 @@
 const path = require("path");
-const { cloudinary } = require("../utils/cloudinary");
+const { cloudinary } = require("../settings/cloudinary");
 const Image = require("../models/imagen.models");
 
-//VISTAS
+// VISTAS
 const indexView = (_req, res) => {
   res.render("galleries/index", { mensaje: "" });
 };
@@ -11,10 +11,32 @@ const createView = (_req, res) => {
   res.render("galleries/create");
 };
 
-//APIS
-const index = async (req, res) => {};
+// APIS
+const index = async (req, res) => {
+  try {
+    // Implementa la lógica para obtener todas las imágenes
+    const images = await Image.findAll();
+    res.status(200).json(images);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al obtener la lista de imágenes." });
+  }
+};
 
-const show = async (req, res) => {};
+const show = async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Implementa la lógica para obtener los detalles de una imagen por su ID
+    const image = await Image.findByPk(id);
+    if (!image) {
+      return res.status(404).json({ mensaje: "Imagen no encontrada." });
+    }
+    res.status(200).json(image);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al obtener los detalles de la imagen." });
+  }
+};
 
 const store = async (req, res) => {
   let image;
@@ -24,8 +46,6 @@ const store = async (req, res) => {
     return res.status(400).json({ mensaje: "No hay archivos que subir." });
   }
 
-  // The name of the input field (i.e. "image") is used to retrieve the uploaded file
-
   image = req.files.image;
 
   const imageExists = await Image.findOne({
@@ -33,49 +53,57 @@ const store = async (req, res) => {
       original_filename: image.name.split(".")[0],
     },
   });
+
   if (imageExists) {
     return res.status(400).json({ mensaje: "La imagen ya existe en la base de datos." });
   }
 
   uploadPath = path.join(__dirname, "../files/", image.name);
 
-  image.mv(uploadPath, function (err) {
-    if (err) return res.status(500).json(err.message);
-  });
+  try {
+    await image.mv(uploadPath); // Sube la imagen al servidor
 
-  const {
-    original_filename,
-    format,
-    resource_type,
-    url,
-    secure_url,
-    asset_id,
-    public_id,
-    version_id,
-    created_at,
-  } = await cloudinary.uploader.upload(uploadPath).catch((error) => {
-    console.log(error);
-    res.status(500).json(err.message);
-  });
+    // Sube la imagen a Cloudinary
+    const cloudinaryResponse = await cloudinary.uploader.upload(uploadPath);
+    const {
+      original_filename,
+      format,
+      resource_type,
+      url,
+      secure_url,
+      asset_id,
+      public_id,
+      version_id,
+      created_at,
+    } = cloudinaryResponse;
 
-  const imagen = Image.create({
-    original_filename,
-    format,
-    resource_type,
-    url,
-    secure_url,
-    asset_id,
-    public_id,
-    version_id,
-    creation: created_at,
-  });
+    // Crea un nuevo registro en la base de datos
+    const imagen = await Image.create({
+      original_filename,
+      format,
+      resource_type,
+      url,
+      secure_url,
+      asset_id,
+      public_id,
+      version_id,
+      creation: created_at,
+    });
 
-  return res.status(201).json({ success: "Imagen subida correctamente." });
+    return res.status(201).json({ success: "Imagen subida correctamente." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al cargar la imagen." });
+  }
 };
 
-const update = async (req, res) => {};
+const update = async (req, res) => {
+  // Implementa la lógica para actualizar una imagen por su ID
+};
 
-const destroy = async (req, res) => {};
+const destroy = async (req, res) => {
+  // Implementa la lógica para eliminar una imagen por su ID
+};
 
 module.exports = {
   indexView,

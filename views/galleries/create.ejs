@@ -1,0 +1,24 @@
+<%- include('../partials/head.ejs') ;%>
+
+<body class="h-100 d-flex flex-column">
+    <%- include('../partials/nav'); %>
+    <div class="container-fluid py-5 px-md-5 col">
+        <header class="d-flex align-items-center justify-content-between">
+            <h1>Nueva Imagen</h1>
+        </header>
+        <main class="col h-100">
+            <form class="d-flex flex-column mx-auto gap-3" id='uploadForm' encType="multipart/form-data">
+                <div class="mb-3">
+                    <label for="image" class="form-label">Seleccione una imagen</label>
+                    <input type="file" class="form-control" name="image" id="image" accept="image/jpeg, image/png, image/jpg" />
+                </div>
+                <button class="btn btn-primary w-25" type='submit'>Subir</button>
+                <p id="validationErrors" class="text-danger"></p>
+            </form>
+        </main>
+    </div>
+    <%- include('../partials/footer'); %>
+    <script src="/js/create.js"></script>
+</body>
+
+</html>
