@@ -24,6 +24,7 @@ DB_PASSWORD= // Contraseña de la base de datos
 DB_HOST=     // Host de la base de datos
 DB_PORT=     // Puerto de la base de datos
 DB_DIALECT=  // Dialecto de la base de datos (MySQL en este caso)
+```
 
 ## Configuración de los Scripts
 
@@ -33,13 +34,13 @@ json
 
 "scripts": {
   "dev" : "nodemon app.js"
-}
+
 
 ## 4. Ejecución del Proyecto
 
 Para iniciar el proyecto en modo desarrollo, utiliza el siguiente comando:
 
 ```bash
-
 npm run dev
-````
+```
+

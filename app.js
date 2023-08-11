@@ -54,11 +54,6 @@ app.post("/upload", (req, res) => {
 });
 
 
-
-
-
-
-
 // Enrutamiento
 app.use("/", require("./routes/galeria.routes"));
 
