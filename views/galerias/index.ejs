@@ -6,21 +6,25 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>      
     <div class="container-fluid py-5 px-md-5 col">
-        <header class="d-flex align-items-center justify-content-between">
+        <header class="d-flex align-items-center justify-content-between mb-4">
+            <h1>Galería de Imágenes</h1>
             <a class="btn btn-primary" href="/crear">Agregar Nueva Imagen</a>
         </header>
-        <main class="col h-100">
-            <p>IMAGENES ALOJADAS DE FORMA LOCAL</p>
-            <section class="row" id="galeriaLocal">                
-                
+        <main class="col">
+            <section class="mb-5">
+                <h2>IMAGENES ALOJADAS DE FORMA LOCAL</h2>
+                <div class="row" id="galeriaLocal">  
+                    <!-- Aquí se mostrarán las imágenes locales -->
+                </div>
             </section>
-            <p>IMAGENES ALOJADAS EN CLOUDINARY</p>
-            <section class="row mt-5" id="galeriaRemota">                
-                
+            <section>
+                <h2>IMAGENES ALOJADAS EN CLOUDINARY</h2>
+                <div class="row" id="galeriaRemota"> 
+                    <!-- Aquí se mostrarán las imágenes alojadas en Cloudinary -->
+                </div>
             </section>
         </main>
     </div>
-
 
     <!-- Incluir el pie de página -->
     <%- include('../partials/footer'); %>

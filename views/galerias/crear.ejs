@@ -4,19 +4,22 @@
     <%- include('../partials/nav'); %>
         <div class="container-fluid py-5 px-md-5 col">
             <header class="d-flex align-items-center justify-content-between">
-                Nueva Imagen
+                <h1>Nueva Imagen</h1>
             </header>
             <main class="col h-100">
                 <form class="d-flex flex-column mx-auto gap-3" id='uploadForm' encType="multipart/form-data">
-                    <input type="file" name="image" id="image" accept="image/jpeg, image/png, image/jpg" />
-                    <div class="d-flex">
-                        <input id="btnSubmit" class="btn btn-primary w-25" type='submit' value='Subir' />
-                        <div id="spinner" class="spinner-border text-primary mx-2 visually-hidden" role="status">
-                        </div>
-                        <span class="visually-hidden">Enviando archivo, espere un momento...</span>
-
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Seleccionar Imagen</label>
+                        <input type="file" name="image" id="image" class="form-control" accept="image/jpeg, image/png, image/jpg" />
                     </div>
-                    <p id="validationErrors"></p>
+                    <div class="d-flex align-items-center gap-3">
+                        <button id="btnSubmit" class="btn btn-primary" type='submit'>
+                            <span>Subir</span>
+                            <div id="spinner" class="spinner-border text-light" role="status" style="display: none;"></div>
+                        </button>
+                        <span id="statusMessage" class="text-muted"></span>
+                    </div>
+                    <p id="validationErrors" class="text-danger"></p>
                 </form>
             </main>
         </div>
