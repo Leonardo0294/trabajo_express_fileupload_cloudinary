@@ -1,7 +1,8 @@
 const path = require("path");
 const { cloudinary } = require("../settings/cloudinary");
+const fs = require("fs");
 const Image = require("../models/models");
-
+//Vistas
 const indexView = (_req, res) => {
   res.render("galerias/index", { mensaje: "" });
 };
