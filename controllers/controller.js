@@ -2,7 +2,7 @@ const path = require("path");
 const { cloudinary } = require("../settings/cloudinary");
 const fs = require("fs");
 const Image = require("../models/models");
-//Vistas
+
 const indexView = (_req, res) => {
   res.render("galerias/index", { mensaje: "" });
 };
@@ -14,7 +14,13 @@ const createView = (_req, res) => {
 const index = async (req, res) => {
   try {
     const images = await Image.findAll();
-    res.status(200).json(images);
+    const imagesWithUrls = images.map((image) => {
+      return {
+        ...image.get(),
+        secure_url: image.secure_url,
+      };
+    });
+    res.status(200).json(imagesWithUrls);
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Error al obtener la lista de imágenes." });
@@ -91,7 +97,17 @@ const store = async (req, res) => {
       creation: created_at,
     });
 
-    return res.status(201).json({ success: "Imagen subida correctamente." });
+    // Obtener la URL segura de la imagen subida a Cloudinary
+    const secureUrl = cloudinaryResponse.secure_url;
+
+    // Imprimir la URL segura en la consola para verificar
+    console.log("URL segura de la imagen:", secureUrl);
+
+    // Responder con la URL segura de Cloudinary
+    return res.status(201).json({
+      success: "Imagen subida correctamente.",
+      secure_url,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Error al cargar la imagen." });
@@ -100,7 +116,7 @@ const store = async (req, res) => {
 
 const update = async (req, res) => {
   const { id } = req.params;
-  const newData = req.body; // Los nuevos datos para actualizar la imagen
+  const newData = req.body;
 
   try {
     const image = await Image.findByPk(id);
@@ -109,7 +125,6 @@ const update = async (req, res) => {
       return res.status(404).json({ mensaje: "Imagen no encontrada." });
     }
 
-    // Actualizar los campos de la imagen con los nuevos datos
     await image.update(newData);
 
     return res
@@ -131,10 +146,8 @@ const destroy = async (req, res) => {
       return res.status(404).json({ mensaje: "Imagen no encontrada." });
     }
 
-    // Eliminar la imagen de Cloudinary
     await cloudinary.uploader.destroy(image.public_id);
 
-    // Eliminar la imagen de la base de datos
     await image.destroy();
 
     return res.status(200).json({ mensaje: "Imagen eliminada correctamente." });
